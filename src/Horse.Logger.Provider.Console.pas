@@ -54,6 +54,7 @@ type
     constructor Create(const AConfig: THorseLoggerConsoleConfig = nil);
     destructor Destroy; override;
     procedure DoReceiveLogCache(ALogCache: THorseLoggerCache);
+	procedure Stop;
     class function New(const AConfig: THorseLoggerConsoleConfig = nil): IHorseLoggerProvider;
   end;
 
@@ -97,6 +98,13 @@ var
 begin
   for I := 0 to Pred(ALogCache.Count) do
     FHorseLoggerProviderConsoleManager.NewLog(THorseLoggerLog(ALogCache.Items[I].Clone));
+end;
+
+procedure THorseLoggerProviderConsole.Stop;
+begin
+  FHorseLoggerProviderConsoleManager.Terminate;
+  FHorseLoggerProviderConsoleManager.GetEvent.SetEvent;
+  FHorseLoggerProviderConsoleManager.WaitFor;
 end;
 
 class function THorseLoggerProviderConsole.New(const AConfig: THorseLoggerConsoleConfig = nil): IHorseLoggerProvider;
